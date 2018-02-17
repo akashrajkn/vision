@@ -1,7 +1,7 @@
 close all
 clear all
 clc
- 
+
 disp('Part 1: Photometric Stereo')
 
 % obtain many images in a fixed view under different illumination
@@ -54,4 +54,3 @@ height_map = construct_surface( p, q );
 
 show_results(albedo, normals, SE);
 show_model(albedo, height_map);
-

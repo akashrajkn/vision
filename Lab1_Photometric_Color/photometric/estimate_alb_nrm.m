@@ -14,7 +14,7 @@ if nargin == 2
     shadow_trick = true;
 end
 
-% create arrays for 
+% create arrays for
 %   albedo (1 channel)
 %   normal (3 channels)
 albedo = zeros(h, w, 1);
@@ -32,7 +32,7 @@ normal = zeros(h, w, 3);
 
 for p = 1:h
     for q = 1:w
-        i = reshape(image_stack(p, q, :), [5, 1]);
+        i = reshape(image_stack(p, q, :), [n, 1]);
         scriptI = diag(i);
         % disp([size(scriptV), size(i), size(scriptI), size(image_stack)]);
         [g, ~] = linsolve(scriptI * scriptV,  scriptI * i);
@@ -45,4 +45,3 @@ end
 % =========================================================================
 
 end
-
