@@ -26,7 +26,11 @@ switch path_type
         %   for each element of the row except for leftmost
         %       height_value = previous_height_value + corresponding_p_value
         
-
+        for i = 1:h
+            for j = 1:w
+                height_map(i, j) =  sum(p(1, 1:j)) +  sum(q(1:i, j));
+            end
+        end
        
         % =================================================================
                
