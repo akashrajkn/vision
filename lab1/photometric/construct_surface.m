@@ -20,7 +20,7 @@ switch path_type
         % YOUR CODE GOES HERE
         % top left corner of height_map is zero
         % for each pixel in the left column of height_map
-        %   height_value = previous_height_value + corresponding_q_value
+        %   height_value = previous_height_value + corresponding_q_value 
         
         % for each row
         %   for each element of the row except for leftmost
@@ -28,7 +28,9 @@ switch path_type
         
         for i = 1:h
             for j = 1:w
-                height_map(i, j) =  sum(p(1, 1:j)) +  sum(q(1:i, j));
+                % -p instead of p to have the same coord system as the 
+                % "row" path_type
+                height_map(i, j) = sum(-p(i, 1:j)) +  sum(q(1:i, 1));
             end
         end
        
@@ -38,15 +40,26 @@ switch path_type
         
         % =================================================================
         % YOUR CODE GOES HERE
-        
-
+        for i = 1:h
+            for j = 1:w
+                height_map(i, j) = sum(p(1, 1:j)) +  sum(q(1:i, j));
+            end
+        end
+       
         % =================================================================
           
     case 'average'
         
         % =================================================================
         % YOUR CODE GOES HERE
-
+        for i = 1:h
+            for j = 1:w
+                col = sum(-p(i, 1:j)) +  sum(q(1:i, 1));
+                row = sum(p(1, 1:j)) +  sum(q(1:i, j));
+                height_map(i, j) = (row + col)/2;
+            end
+        end
+       
         
         % =================================================================
 end
