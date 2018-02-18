@@ -1,10 +1,16 @@
-function show_results( albedo, normals, SE )
+function show_results( albedo, normals, SE, folder, sim )
 %SHOW_RESULTS display albedo, normal and computational errors
+
+save_result = true;
+
+if nargin < 4
+    save_result = false;
+end
 
 [h, w, ~] = size(normals);
 
 % plot the results
-figure
+figure('rend', 'painters', 'pos', [10 10 900 600])
 subplot(2, 3, 1);
 [X, Y] = meshgrid(1:w, 1:h);
 surf(X, Y, SE, gradient(SE));
@@ -35,6 +41,10 @@ subplot(2, 3, 6);
 imshow(normal_img(:, :, 3));
 title('Normal Z-component');
 
-
+% save result in file
+if save_result
+    filepath = strcat('./results/', folder, '/plots_', num2str(sim), '.png');
+    saveas(gcf, filepath);
 end
 
+end
