@@ -30,9 +30,9 @@ normal = zeros(h, w, 3);
 for p = 1:h
     for q = 1:w
         i = reshape(image_stack(p, q, :), [n, 1]);
-        scriptI = diag(i);
-
+        
         if shadow_trick
+            scriptI = diag(i);
             [g, ~] = linsolve(scriptI * scriptV,  scriptI * i);
         else
             [g, ~] = linsolve(scriptV, i);
