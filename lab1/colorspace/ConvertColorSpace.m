@@ -1,10 +1,10 @@
 function [new_image] = ConvertColorSpace(input_image, colorspace)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Converts an RGB image into a specified color space, visualizes the 
-% color channels and returns the image in its new color space.                     
-%                                                        
-% Colorspace options:                                    
-%   opponent                                            
+% Converts an RGB image into a specified color space, visualizes the
+% color channels and returns the image in its new color space.
+%
+% Colorspace options:
+%   opponent
 %   rgb -> for normalized RGB
 %   hsv
 %   ycbcr
@@ -18,10 +18,10 @@ function [new_image] = ConvertColorSpace(input_image, colorspace)
 input_image = im2double(input_image);
 
 if strcmp(colorspace, 'opponent')
-    new_image = rgb2opponent(input_image); % fill in this function
-elseif strcmp(colorspace, 'rgb')  
-    new_image = rgb2normedrgb(input_image); % fill in this function
-elseif strcmp(colorspace, 'hsv')   
+    new_image = rgb2opponent(input_image);
+elseif strcmp(colorspace, 'rgb')
+    new_image = rgb2normedrgb(input_image);
+elseif strcmp(colorspace, 'hsv')
     % use the built-in function
 elseif strcmp(colorspace, 'ycbcr')
     % use the built-in function
