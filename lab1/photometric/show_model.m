@@ -1,10 +1,13 @@
-function show_model(albedo, height_map)
+function show_model(albedo, height_map, folder, sim)
 % SHOW_MODEL: display the model with texture
 %   albedo: image used as texture for the model
 %   height_map: height in z direction, describing the model geometry
-% Spring 2014 CS 543 Assignment 1
-% Arun Mallya and Svetlana Lazebnik
 
+save_result = true;
+
+if nargin < 4
+    save_result = false;
+end
 
 % some cosmetic transformations to make 3D model look better
 [hgt, wid] = size(height_map);
@@ -25,5 +28,11 @@ set(gca, 'XDir', 'reverse')
 set(gca, 'XTick', []);
 set(gca, 'YTick', []);
 set(gca, 'ZTick', []);
+
+% save result in file
+if save_result
+    filepath = strcat('./results/', folder, '/heatmap_', num2str(sim), '.png');
+    saveas(gcf, filepath);
 end
 
+end

@@ -1,5 +1,5 @@
-function [ image_stack, scriptV ] = load_syn_images( image_dir, channel )
-%LOAD_SYN_IMAGES read from directory image_dir all files with extension png
+function [ image_stack, scriptV ] = load_syn_images( image_dir, channel, sample_number )
+% LOAD_SYN_IMAGES read from directory image_dir all files with extension png
 %   image_dir: path to the image directory
 %   nchannel: the image channel to be loaded, default = 1
 %
@@ -13,26 +13,33 @@ if nargin == 1
     channel = 1;
 end
 
+if nargin <= 2
+    sample_number = nfiles;
+end
+
 image_stack = 0;
 V = 0;
 Z = 0.5;
 
-for i = 1:nfiles
+% sample n number of files
+% index_array = datasample([1:nfiles], sample_number, 'Replace', false);
+
+for i = 1:sample_number
 
     % read input image
     im = imread(fullfile(image_dir, files(i).name));
     im = im(:, :, channel);
-    
+
     % stack at third dimension
     if image_stack == 0
         [h, w] = size(im);
         fprintf('Image size (HxW): %dx%d\n', h, w);
-        image_stack = zeros(h, w, nfiles, 'uint8');
-        V = zeros(nfiles, 3, 'double');
+        image_stack = zeros(h, w, sample_number, 'uint8');
+        V = zeros(sample_number, 3, 'double');
     end
-    
+
     image_stack(:, :, i) = im;
-    
+
     % read light direction from image name
     name = files(i).name(8:end);
     m = strfind(name,'_')-1;
@@ -51,4 +58,3 @@ normV = sqrt(sum(V.^2, 2));
 scriptV = bsxfun(@rdivide, V, normV);
 
 end
-
