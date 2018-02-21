@@ -1,7 +1,7 @@
 function AWB ( )
 % AWB performs automatic white balance adjustment using the grey-world alg
 
-im = im2double(imread('awb.jpg'));
+im = im2double(imread('awb1.jpg'));
 im_corrected = zeros(size(im));
 
 % adjustment to the channels needed to make the mean color of the img grey
