@@ -1,7 +1,7 @@
 function [ image_stack, scriptV ] = load_syn_images( image_dir, channel, sample_number )
 % LOAD_SYN_IMAGES read from directory image_dir all files with extension png
 %   image_dir: path to the image directory
-%   nchannel: the image channel to be loaded, default = 1
+%   nchannel: the number of channels (1: grayscale, 3: rgb, 4: cmyk)
 %
 %   image_stack: all images stacked along the 3rd channel
 %   scriptV: light directions
@@ -26,19 +26,35 @@ Z = 0.5;
 
 for i = 1:sample_number
 
-    % read input image
-    im = imread(fullfile(image_dir, files(i).name));
-    im = im(:, :, channel);
+    if channel == 1
+        % read input image
+        im = imread(fullfile(image_dir, files(i).name));
+        im = im(:, :, channel);
 
-    % stack at third dimension
-    if image_stack == 0
-        [h, w] = size(im);
-        fprintf('Image size (HxW): %dx%d\n', h, w);
-        image_stack = zeros(h, w, sample_number, 'uint8');
-        V = zeros(sample_number, 3, 'double');
+        % stack at third dimension
+        if image_stack == 0
+            [h, w] = size(im);
+            fprintf('Image size (HxW): %dx%d\n', h, w);
+            image_stack = zeros(h, w, sample_number, 'uint8');
+            V = zeros(sample_number, 3, 'double');
+        end
+
+        image_stack(:, :, i) = im;
+    elseif channel == 3
+        % read input image
+        im = imread(fullfile(image_dir, files(i).name));
+        im = im(:, :, :);
+
+        % stack at fourth dimension
+        if image_stack == 0
+            [h, w, d] = size(im); % height, width, channels
+            fprintf('Image size (HxW): %dx%dx%d\n', h, w, d);
+            image_stack = zeros(h, w, d, sample_number, 'uint8');
+            V = zeros(sample_number, 3, 'double');
+        end
+
+        image_stack(:, :, :, i) = im;
     end
-
-    image_stack(:, :, i) = im;
 
     % read light direction from image name
     name = files(i).name(8:end);

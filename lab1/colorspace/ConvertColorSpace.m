@@ -40,6 +40,6 @@ else
     return;
 end
 
-% visualize(new_image, colorspace); % fill in this function
+visualize(new_image, colorspace, input_image); % fill in this function
 
 end
