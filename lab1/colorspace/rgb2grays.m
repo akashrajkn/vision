@@ -2,7 +2,7 @@ function [output_image] = rgb2grays(input_image, method)
 % converts an RGB into grayscale by using 4 different methods
 
 if nargin == 1
-    method = 'default'
+    method = 'default';
 end
 
 [R, G, B] = getColorChannels(input_image);
@@ -10,7 +10,7 @@ end
 switch method
     case 'lightness'
         % ligtness method
-        output_image = (max(input_image, [], 3) + min(input_image, [], 3)) / 2
+        output_image = (max(input_image, [], 3) + min(input_image, [], 3)) / 2;
     case 'average'
         % average method
         output_image = (R + G + B) / 3;
