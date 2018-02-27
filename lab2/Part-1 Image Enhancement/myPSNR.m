@@ -1,5 +1,5 @@
 function [ PSNR ] = myPSNR( orig_image, approx_image )
-fprintf('Not implemented\n')
-
+RMSE = sqrt(mean(mean((orig_image - approx_image).^2)));
+PSNR = 20 * log10(max(max(orig_image))/ RMSE);
 end
 
