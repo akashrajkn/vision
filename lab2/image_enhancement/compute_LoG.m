@@ -17,8 +17,6 @@ switch LOG_type
         f_gauss1 = fspecial('gaussian', 5, .8);
         f_gauss2 = fspecial('gaussian', 5, .5);
         imOut = imfilter(image, f_gauss1 - f_gauss2, 'replicate', 'conv');
-        imOut = imOut ./ max(max(imOut));
-
 end
 end
 

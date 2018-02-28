@@ -1,3 +1,4 @@
+% Load the images
 original_im = im2double(imread('./images/image1.jpg'));
 noisy_im_saltpepper = im2double(imread('./images/image1_saltpepper.jpg'));
 noisy_im_gauss = im2double(imread('./images/image1_gaussian.jpg'));
