@@ -63,9 +63,14 @@ myGabor_imaginary = gaussianEnv .* sinCarrier;   % modulate gaussianEnv with sin
 myGabor(:, :, 1) = myGabor_real;
 myGabor(:, :, 2) = myGabor_imaginary;
 
-figure;
-subplot(121), imshow(myGabor_real,[]);
-subplot(122), imshow(myGabor_imaginary, []);
+% figure;
+% ax1 = subplot(121);
+% imshow(myGabor_real,[]);
+% title(ax1,'Real component')
+%
+% ax2 = subplot(122);
+% imshow(myGabor_imaginary, []);
+% title(ax2,'Imaginary component')
 end
 
 

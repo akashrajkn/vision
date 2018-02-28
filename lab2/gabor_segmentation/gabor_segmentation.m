@@ -136,6 +136,9 @@ for jj = 1 : length(gaborFilterBank)
     gabor = gaborFilterBank(jj).filterPairs;
     real_out =  imfilter(img_gray, gabor(:, :, 1));  % filter the grayscale input with real part of the Gabor
     imag_out =  imfilter(img_gray, gabor(:, :, 2));  % filter the grayscale input with imaginary part of the Gabor
+
+    real_out = imfilter(img_gray, gabor(:, :, 1));
+    imag_out = imfilter(img_gray, gabor(:, :, 2));
     featureMaps{jj} = cat(3, real_out, imag_out);
 
     % Visualize the filter responses if you wish.
@@ -190,7 +193,7 @@ if smoothingFlag
         % ii) insert the smoothed image into features(:,:,jj)
     %END_FOR
     for jj = 1:length(featureMags)
-        features(:, :, jj) = imgaussfilt(featureMags{jj}, gaborFilterBank(jj).sigma);
+        features(:,:,jj) = imgaussfilt(featureMags{jj}, K*gaborFilterBank(jj).lambda, 'Padding', 'symmetric');
     end
 else
     % Don't smooth but just insert magnitude images into the matrix
