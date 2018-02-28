@@ -1,4 +1,4 @@
-function G = gauss2D(sigma, kernel_size)
+function G = gauss2D( sigma, kernel_size )
 % 2-D Gaussian Filter - Uses the Gaussian 1-D filter implementation
 % @param sigma: variance of the Gaussian
 % @param kernel_size: size of the convolutional kernel

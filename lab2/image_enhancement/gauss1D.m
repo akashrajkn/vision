@@ -1,4 +1,4 @@
-function G = gauss1D(sigma, kernel_size)
+function G = gauss1D( sigma, kernel_size )
 % 1-D Gaussian filter
 % @param sigma: variance of the Gaussian
 % @param kernel_size: size of the convolutional kernel
