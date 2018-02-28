@@ -193,6 +193,7 @@ if smoothingFlag
         % ii) insert the smoothed image into features(:,:,jj)
     %END_FOR
     for jj = 1:length(featureMags)
+        K = 3;
         features(:,:,jj) = imgaussfilt(featureMags{jj}, K*gaborFilterBank(jj).lambda, 'Padding', 'symmetric');
     end
 else
