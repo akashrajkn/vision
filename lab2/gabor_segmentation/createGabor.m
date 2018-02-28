@@ -47,7 +47,6 @@ rot_XY = rotMat * XY;
 rot_x = rot_XY(1, :);
 rot_y = rot_XY(2, :);
 
-
 % Create the Gaussian envelope.
 gaussianEnv = createGauss(rot_x, rot_y, gamma, sigma);
 
