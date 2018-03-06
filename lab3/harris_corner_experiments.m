@@ -1,17 +1,24 @@
+im_name = 'pingpong';
+sigma = 1;
+n = 2;
+thres = .1;
 
+switch im_name
+    case 'pingpong'
+        im_original = imread('./pingpong/0000.jpeg');
+    case 'toy'
+        im_original = imread('./person_toy/00000001.jpg')
+end
 
-
-image_original = imread('./pingpong/0000.jpeg');
-image_original = imread('./person_toy/00000001.jpg');
-
-[H, row, col] = harris_corner_detector(image_original, 1, 1, .07, true);
+% Detect corners in the image; generate plots of the gradients and corners
+[H, row, col] = harris_corner_detector(im_original, sigma, n, thres, true);
 
 figure();
 for i=1:5
-    im = imrotate(image_original, randi([0, 360]));
-    [H, row, col] = harris_corner_detector(im, 1, 1, .07, false);
-    subplot(1,5,i)
-    imshow(im);
-    hold on
+    % Randomly rotate the image
+    im = imrotate(im_original, randi([0, 360]));
+    % Detect the corners in the rotated image and add the subplot
+    [H, row, col] = harris_corner_detector(im, sigma, n, thres, false);
+    subplot(1,5,i); imshow(im); hold on;
     plot(col, row, 'o', 'MarkerEdgeColor','blue', 'MarkerSize', 8);
 end
