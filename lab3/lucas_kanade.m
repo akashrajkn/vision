@@ -30,9 +30,6 @@ function [Vx, Vy, fig] = lucas_kanade(path1, path2, window_size, interest_x, int
 
     h_w = floor(window_size / 2);
 
-    num_x = size(interest_x, 1);
-    num_y = size(interest_y, 1);
-
     % If interest points are not given, uniformly set them
     if nargin <= 4
         % number of regions in x and y directions
@@ -53,6 +50,9 @@ function [Vx, Vy, fig] = lucas_kanade(path1, path2, window_size, interest_x, int
             end
         end
     end
+
+    num_x = size(interest_x, 1);
+    num_y = size(interest_y, 1);
 
     Vx = zeros(size(interest_x, 1), 1);
     Vy = zeros(size(interest_y, 1), 1);
