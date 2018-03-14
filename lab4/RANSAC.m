@@ -15,8 +15,8 @@ function [T] = RANSAC(matchings, f1, f2)
     x2 = x2';
     y2 = y2';
 
-    zer = zeros(size(x1, 1));
-    one = ones(size(x1, 1));
+    zer = zeros(size(x1));
+    one = ones(size(x1));
 
     A = [x1 y1 zer zer one zer; zer zer x1 y1 zer one];
     b = [x2; y2];
