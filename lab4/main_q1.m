@@ -19,7 +19,7 @@ image1_s = single(image1);
 image2_s = single(image2);
 % ------------------------------------------------------------
 
-% Keypoint matchings
+% Question 1, 2: Keypoint matchings
 [matchings, f1, d1, f2, d2] = keypoint_matching(image1_s, image2_s);
 perm = randperm(size(matchings, 2));
 sel = perm(1:samples);
@@ -43,3 +43,5 @@ f2(1,:) = f2(1, :) + size(image1_s, 2);
 vl_plotframe(f2(:, matchings(2, :)));
 axis image off;
 % ------------------------------------------------------------
+
+% Question 3: RANSAC
