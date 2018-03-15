@@ -1,9 +1,10 @@
 function [T] = RANSAC(matchings, f1, f2)
 % Returns a transformation
-%   @param: image1
-%   @param: image2
+%   @param matchings - keypoint matchings
+%   @param f1
+%   @param f2
 %
-%   @return: keypoint matchings
+%   @return: transformation T
 
     x1 = f1(1, matchings(1, :));
     y1 = f1(2, matchings(1, :));
