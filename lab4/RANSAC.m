@@ -1,4 +1,4 @@
-function [T] = RANSAC(matchings, f1, f2, N, P)
+function [best_transformation] = RANSAC(matchings, f1, f2, N, P)
 % Returns a transformation
 %   @param matchings - keypoint matchings
 %   @param f1
