@@ -39,7 +39,10 @@ im_stitched(:, 1:w1) = im1;
 h_shift = round(- T(6) +  h2 - h_stitched + 1 )
 w_shift = round(- T(5) + 1)
 
-im_stitched(h_shift:h_shift+h2_tr-1, w_shift:w_shift+w2_tr-1)(im2_tr~=0) = im2_tr;
+% stitching with original im1 on top
+im_stitched(h_shift:h_shift+h2_tr-1, w1:w_shift+w2_tr-1) = im2_tr(:, w1-w_shift+1:end);
+
+% stitching with transformed im2 on top
 % for i = 1:h2_tr
 %     for j = 1:w2_tr
 %         if im2_tr(i, j) > 0
@@ -47,9 +50,6 @@ im_stitched(h_shift:h_shift+h2_tr-1, w_shift:w_shift+w2_tr-1)(im2_tr~=0) = im2_t
 %         end
 %     end
 % end
-
-size(im_stitched)
-
 
 subplot(1,4,1), imshow(im1)
 subplot(1,4,2), imshow(im2)
