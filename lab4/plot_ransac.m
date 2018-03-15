@@ -1,10 +1,9 @@
 function plot_ransac(image1, image2, T)
-% Returns a transformation
+% Plots image1 such that the pose of objects in the scene corresponds to
+% that in image2.
 %   @param image1 - keypoint matchings
 %   @param image2
 %   @param T - Transformation matrix [m1 m2 m3 m4 t1 t2]'
-%
-%   @return: transformation T
 
     [h, w] = size(image1);
     transformed_image = zeros(h, w);
