@@ -11,9 +11,14 @@ function [im_stitched] = stitch(im1_original, im2_original)
     if ndims(im1_original) == 3
         [~, ~, channels] = size(im1_original);
         im1 = rgb2gray(im1_original);
+    else
+        im1 = im1_original;
     end
+    
     if ndims(im2_original) == 3
         im2 = rgb2gray(im2_original);
+    else
+        im2 = im2_original;
     end
 
     % convert to type single
