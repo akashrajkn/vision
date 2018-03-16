@@ -1,10 +1,11 @@
 function plot_descriptors(image1, image2, matchings, f1, f2)
 % Returns a transformation
+% NOTE: Requires VLFeat (http://www.vlfeat.org/)
+%   @param image1
+%   @param image2
 %   @param matchings - keypoint matchings
 %   @param f1
 %   @param f2
-%
-%   @return: transformation T
 
     image1_s = single(image1);
 

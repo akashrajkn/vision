@@ -1,3 +1,5 @@
+% Demo file for Image Alignment task.
+
 clear all; close all; clc;
 
 % load images
