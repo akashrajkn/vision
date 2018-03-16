@@ -1,4 +1,4 @@
-function [best_transformation] = RANSAC(matchings, f1, f2, N, P)
+function [best_transformation, counts] = RANSAC(matchings, f1, f2, N, P)
 % Returns a transformation
 %   @param matchings - keypoint matchings
 %   @param f1
@@ -7,6 +7,7 @@ function [best_transformation] = RANSAC(matchings, f1, f2, N, P)
 %   @param P - subset of matchings to use in RANSAC
 %
 %   @return: transformation T
+%   @return: counts - number of inliers for each iteration (size N)
 
     x1 = f1(1, matchings(1, :));
     y1 = f1(2, matchings(1, :));
@@ -20,9 +21,10 @@ function [best_transformation] = RANSAC(matchings, f1, f2, N, P)
     one = ones(size(x1_t));
     A_n = [x1_t y1_t zer zer one zer; zer zer x1_t y1_t zer one];
     num_p = size(matchings, 2);  % number of points
-    
+
     best_transformation = [];
     best_count = 0;
+    counts = zeros(N, 1);
 
     for iteration = 1:N
         % sample P points
@@ -52,6 +54,8 @@ function [best_transformation] = RANSAC(matchings, f1, f2, N, P)
             best_count = count;
             best_transformation = T;
         end
+
+        counts(iteration) = count;
     end
 
     disp("Best transformation is: ")
@@ -82,4 +86,3 @@ function [T] = compute_transformation(matchings, f1, f2)
     T = pinv(A) * b;
 
 end
-
