@@ -31,7 +31,7 @@ function [im_transformed] = transform_image(im, T, filter)
                     
                     if ij_original(1)>0 && ij_original(2)>0 && ij_original(1) <= h && ij_original(2) <= w
                         disp(ij_original)
-                        im_transformed(i, j, :) = im(ij_original(1), ij_original(2));
+                        im_transformed(i, j, :) = im(ij_original(1), ij_original(2), :);
                     end
                 end
             end
