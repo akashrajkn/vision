@@ -25,40 +25,30 @@ function [im_stitched] = stitch(im1_original, im2_original)
     im1_s = single(im1);
     im2_s = single(im2);
 
-    % compute the parameters of the transformation needed to align ima1 and
+    % compute the parameters of the transformation needed to align im1 and
     % im2 using the matched keypoints
     [matchings, f1, d1, f2, d2] = keypoint_matching(im1_s, im2_s);
     [T, ~] = RANSAC(matchings, f1, f2, 50, 5);
     % transfrom im2 such that the objects are in the same "pose" as in im1
-    im2_tr = transform_image(im2_original, T);
+    [im2_tr, offsets] = transform_image(im2_original, T);
 
     [h1, w1] = size(im1);
     [h2, w2] = size(im2);
-    [h2_tr, w2_tr, ~] = size(im2_tr);
-
-    % TODO expand im1 just in case
-    % compute the size of the stitched image
-    h_stitched = max(h1, h2_tr);
-    w_stitched = round(w2_tr - T(5) + 1);
-
-    % allocate an array of zeros for the stitched image
-    im_stitched = zeros(h_stitched, w_stitched, channels);
-
-    % fill in the part of the stitched image from the first image
-    im_stitched(1:h1, 1:w1, :) = im1_original;
-
-    h_shift = round(- T(6) +  h2 - h_stitched + 1);
-    w_shift = round(- T(5) + 1);
-
-    % stitching with original im1 on top
-    im_stitched(h_shift:h_shift+h2_tr-1, w1:w_shift+w2_tr-1, :) = im2_tr(:, w1-w_shift+1:end, :);
-
-    % stitching with transformed im2 on top
-%     for i = 1:h2_tr
-%         for j = 1:w2_tr
-%             if im2_tr(i, j) > 0
-%                 im_stitched(i + h_shift, j + w_shift, :) = im2_tr(i, j, :);
-%             end
-%         end
-%     end
+    
+    % Get coordinates of the corners of im1 and im2 in the stitched image
+    M = reshape(T(1:4), [2,2]);
+    cor1 = [1,1; h1,1; 1,w1; h1,w1];
+    cor2 = round([1,1; h2,1; 1,w2; h2,w2] * M) - round([T(6), T(5)]);
+    cor2(:, 1) = cor2(:, 1) - offsets(1);
+    cor2(:, 2) = cor2(:, 2) - offsets(2);
+    cor = vertcat(cor1, cor2);
+    
+    % Ensure there're no negative indices 
+    cor(:,1) = cor(:,1) - min(cor(:,1)) + 1;
+    cor(:,2) = cor(:,2) - min(cor(:,2)) + 1;
+    
+    % Create and fill in the stitched image
+    im_stitched = zeros(max(cor(:,1)), max(cor(:,2)), channels);    
+    im_stitched(min(cor(5:8,1)):max(cor(5:8,1)), min(cor(5:8,2)):max(cor(5:8,2)), :) = im2_tr;
+    im_stitched(min(cor(1:4,1)):max(cor(1:4,1)), min(cor(1:4,2)):max(cor(1:4,2)), :) = im1_original;
 end
