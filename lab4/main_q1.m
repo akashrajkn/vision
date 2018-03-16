@@ -36,7 +36,9 @@ plot_descriptors(image1, image2, matchings, f1, f2)
 
 % Question 3: Find best transformation with RANSAC
 best_transformation = RANSAC(matchings, f1, f2, N, P);
+image_transformed = transform_image(image2, best_transformation);
 
 % -------------------------- Plots ---------------------------
+figure; imshow(uint8(image_transformed))
 plot_ransac(image1, image2, best_transformation)
 % ------------------------------------------------------------
