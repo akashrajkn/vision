@@ -20,7 +20,7 @@ im2_s = single(im2);
 
 [matchings, f1, d1, f2, d2] = keypoint_matching(im1_s, im2_s);
 T = RANSAC(matchings, f1, f2, 10000, 5);
-im2_tr = transform_image(im2_original, T, 'none');
+im2_tr = transform_image(im2_original, T, "nearest");
 
 [h1, w1] = size(im1);
 [h2, w2] = size(im2);
