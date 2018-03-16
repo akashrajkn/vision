@@ -28,7 +28,7 @@ function [im_stitched] = stitch(im1_original, im2_original)
     % compute the parameters of the transformation needed to align ima1 and
     % im2 using the matched keypoints
     [matchings, f1, d1, f2, d2] = keypoint_matching(im1_s, im2_s);
-    [T, ~] = RANSAC(matchings, f1, f2, 10000, 5);
+    [T, ~] = RANSAC(matchings, f1, f2, 50, 5);
     % transfrom im2 such that the objects are in the same "pose" as in im1
     im2_tr = transform_image(im2_original, T);
 
@@ -54,11 +54,11 @@ function [im_stitched] = stitch(im1_original, im2_original)
     im_stitched(h_shift:h_shift+h2_tr-1, w1:w_shift+w2_tr-1, :) = im2_tr(:, w1-w_shift+1:end, :);
 
     % stitching with transformed im2 on top
-    % for i = 1:h2_tr
-    %     for j = 1:w2_tr
-    %         if im2_tr(i, j) > 0
-    %             im_stitched(i + h_shift, j + w_shift) = im2_tr(i, j);
-    %         end
-    %     end
-    % end
+%     for i = 1:h2_tr
+%         for j = 1:w2_tr
+%             if im2_tr(i, j) > 0
+%                 im_stitched(i + h_shift, j + w_shift, :) = im2_tr(i, j, :);
+%             end
+%         end
+%     end
 end
