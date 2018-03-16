@@ -1,4 +1,11 @@
 function [im_transformed] = transform_image(im, T)
+% Transforms image im with transformation T w/o taking the traslation terms
+% [T(5) and T(6)] into account. The missing pixels are filled with nearest
+% neighbor interpolation
+%   @param im - input image
+%   @param T - the transformation parameters
+%
+%   @return: im_transformed
 
     [h,w,channels] = size(im);
     M = reshape(T(1:4), [2,2]);
