@@ -1,8 +1,8 @@
 function [net, info, expdir] = finetune_cnn(varargin)
 
 %% Define options
-run(fullfile(fileparts(mfilename('fullpath')), ...
-  '..', '..', '..', 'matlab', 'vl_setupnn.m')) ;
+%run(fullfile(fileparts(mfilename('fullpath')), ...
+%  '..', '..', '..', 'matlab', 'vl_setupnn.m')) ;
 
 opts.modelType = 'lenet' ;
 [opts, varargin] = vl_argparse(opts, varargin) ;
@@ -81,9 +81,31 @@ function imdb = getCaltechIMDB()
 % Preapre the imdb structure, returns image data with mean image subtracted
 classes = {'airplanes', 'cars', 'faces', 'motorbikes'};
 splits = {'train', 'test'};
+imdata_dir = '../Caltech4/ImageData/';
 
-%% TODO: Implement your loop here, to create the data structure described in the assignment
 
+% TODO: Implement your loop here, to create the data structure described in the assignment
+class_set_combos = cell(size(classes, 2)*size(splits, 2), 1);
+i = 1;
+for class = classes
+    for split = splits
+        class_set_combos(i) = strcat(class, '_' ,split);
+        i=i+1;
+    end
+end
+
+sets = []
+labels = []
+for i = 1:size(class_set_combos, 1)
+    combo_path = string(strcat(imdata_dir, class_set_combos(i)));
+    dinfo = dir(combo_path);
+    filenames = strcat(combo_path, '/', {dinfo.name});
+    %cat all filenames
+    sets_combo = ones(size(filenames,2), 1);
+    size(sets_combo)
+    sets = cat(1, sets, sets_combo)
+end
+disp(filenames(10))
 
 %%
 % subtract mean
