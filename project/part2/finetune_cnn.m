@@ -100,11 +100,12 @@ for class = classes
         fnames_combo = fnames_combo(4:end);
         fnames = [fnames, fnames_combo];
         
-        labels_combo = zeros(size(fnames_combo,2), size(classes,2));
-        labels_combo(:, class_id) = 1;
+        %labels_combo = zeros(size(fnames_combo,2), size(classes,2));
+        labels_combo = ones(size(fnames_combo,2), 1) * class_id;
+        %labels_combo(:, class_id) = 1;
         labels = cat(1, labels, labels_combo);
         
-        sets_combo = ones(size(fnames_combo,2), 1) * strcmp(split,'train');
+        sets_combo = ones(size(fnames_combo,2), 1) + strcmp(split,'test');
         sets = cat(1, sets, sets_combo);
     end
     class_id = class_id + 1;
@@ -121,8 +122,13 @@ for i=1:size(fnames, 1)
     end
     data(:,:,:, i) = im;
 end
+disp(data(:,:,:,2000))
 data = single(data/255);
+data(isnan(data)) = 0;
 
+labels = single(labels');
+sets = single(sets')
+%fd
 %%
 % subtract mean
 dataMean = mean(data(:, :, :, sets == 1), 4);
