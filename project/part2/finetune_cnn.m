@@ -1,15 +1,15 @@
-function [net, info, expdir] = finetune_cnn(varargin)
+function [net, info, expdir] = finetune_cnn(batchSize, numEpochs)
 
 %% Define options
 %run(fullfile(fileparts(mfilename('fullpath')), ...
 %  '..', '..', '..', 'matlab', 'vl_setupnn.m')) ;
 
 opts.modelType = 'lenet' ;
-[opts, varargin] = vl_argparse(opts, varargin) ;
+%[opts, varargin] = vl_argparse(opts, varargin) ;
 
 opts.expDir = fullfile('data', ...
   sprintf('cnn_assignment-%s', opts.modelType)) ;
-[opts, varargin] = vl_argparse(opts, varargin) ;
+%[opts, varargin] = vl_argparse(opts, varargin) ;
 
 opts.dataDir = './data/' ;
 opts.imdbPath = fullfile(opts.expDir, 'imdb-caltech.mat');
@@ -17,7 +17,7 @@ opts.whitenData = true ;
 opts.contrastNormalization = true ;
 opts.networkType = 'simplenn' ;
 opts.train = struct() ;
-opts = vl_argparse(opts, varargin) ;
+%opts = vl_argparse(opts, varargin) ;
 if ~isfield(opts.train, 'gpus'), opts.train.gpus = []; end;
 
 %opts.train.gpus = [1];
@@ -26,10 +26,9 @@ if ~isfield(opts.train, 'gpus'), opts.train.gpus = []; end;
 
 %% update model
 
-net = update_model();
+net = update_model(batchSize, numEpochs);
 
-%% TODO: Implement getCaltechIMDB function below
-
+%% load data
 if exist(opts.imdbPath, 'file')
   imdb = load(opts.imdbPath) ;
 else

@@ -1,6 +1,6 @@
-function net = update_model(varargin)
+function net = update_model(batchSize, numEpochs)
 opts.networkType = 'simplenn' ;
-opts = vl_argparse(opts, varargin) ;
+%opts = vl_argparse(opts, varargin) ;
 
 
 %% TODO: PLAY WITH THESE PARAMETERTS TO GET A BETTER ACCURACY
@@ -12,12 +12,15 @@ lr = lr_prev_layers ;
 
 % Meta parameters
 net.meta.inputSize = [32 32 3] ;
-net.meta.trainOpts.learningRate = [ 0.05*ones(1,20) ...
-                                    0.005*ones(1,20)...
-                                    0.0005*ones(1,10)...
+
+lr_period = round(numEpochs / 4);
+net.meta.trainOpts.learningRate = [ 0.05*ones(1,lr_period) ...
+                                    0.001*ones(1,lr_period)...
+                                    0.005*ones(1,lr_period)...
+                                    0.0005*ones(1,lr_period)...
                                     ] ;
 net.meta.trainOpts.weightDecay = 0.0001 ;
-net.meta.trainOpts.batchSize = 100 ;
+net.meta.trainOpts.batchSize = batchSize ;
 net.meta.trainOpts.numEpochs = numel(net.meta.trainOpts.learningRate) ;
 
 %% Define network 
