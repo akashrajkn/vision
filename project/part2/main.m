@@ -1,28 +1,41 @@
 %% main function 
 %% fine-tune the cnn & get optimal hyperparameters
+seeds = 3;
 batch_size_array = [50, 100];
-num_epochs_array = [4];
-results = zeros(length(batch_size_array)*length(num_epochs_array), 4);
+num_epochs_array = [40, 80, 120];
+results = zeros(length(batch_size_array)*length(num_epochs_array)*seeds, 5);
 
 i = 1;
-for batch_size = batch_size_array
-    for num_epochs = num_epochs_array
-        rng(1)
-        rmdir('data/cnn_assignment-lenet', 's')
-        [net, info, expdir] = finetune_cnn(batch_size, num_epochs);
-        obj = vertcat(info.val.objective);
-        top1err = vertcat(info.val.top1err);
-        results(i, :) = [batch_size, num_epochs, top1err(num_epochs), obj(num_epochs)];
-        i = i+1;
-        if top1err(num_epochs) == max(results(:, 3))
-            net_fine_tuned_best = net;
-            info_fine_tuned_best = info;
-            expdir_fine_tuned_best = expdir;
+for num_epochs = num_epochs_array
+    for batch_size = batch_size_array
+        for seed = 1:seeds
+            rng(seed)
+            rmdir('data/cnn_assignment-lenet', 's')
+            [net, info, expdir] = finetune_cnn(batch_size, num_epochs);
+            obj = vertcat(info.val.objective);
+            top1err = vertcat(info.val.top1err);
+            results(i, :) = [batch_size, num_epochs, top1err(num_epochs), obj(num_epochs), seed];
+            i = i+1;
+            % save the network and the info if it performs best (so far)
+            if top1err(num_epochs) == max(results(:, 3))
+                net_fine_tuned_best = net;
+                info_fine_tuned_best = info;
+                expdir_fine_tuned_best = expdir;
+            end
         end
     end
 end
 disp(results)
 dlmwrite('results-hyperparam.txt',results,'delimiter','\t')
+
+% for every hyperparameter setting, take an average of the results obtained
+% using different seeds. this works because the seed is alterated in the 
+% innermost loop.
+res_seeds_avgd_out = arrayfun(@(i) mean(results(i:i+seeds-1, :)), 1:seeds:length(results)-seeds+1, 'un',0)';
+res_seeds_avgd_out = cell2mat(res_seeds_avgd_out);
+disp(res_seeds_avgd_out)
+dlmwrite('results-hyperparam-avg-per-seed.txt',res_seeds_avgd_out,'delimiter','\t')
+
 
 %% extract features and train svm
 nets.fine_tuned = net_fine_tuned_best;
@@ -32,7 +45,6 @@ data = load(fullfile(expdir, 'imdb-caltech.mat'));
 train_svm(nets, data);
 
 %% T-SNE
-
 % extract features resuing the code from the provided train_svm.m
 nets.pre_trained.layers{end}.type = 'softmax';
 nets.fine_tuned.layers{end}.type = 'softmax';
