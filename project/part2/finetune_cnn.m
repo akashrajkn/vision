@@ -83,9 +83,6 @@ classes = {'airplanes', 'cars', 'faces', 'motorbikes'};
 splits = {'train', 'test'};
 imdata_dir = '../Caltech4/ImageData/';
 
-
-% TODO: Implement your loop here, to create the data structure described in the assignment
-
 sets = [];
 labels = [];
 fnames = [];
@@ -96,39 +93,39 @@ for class = classes
         dinfo = dir(combo_path);
         
         fnames_combo = strcat(combo_path, '/', {dinfo.name});
-        % remove ".", "..", and "thumbs.db" from every fnames_combo
+        % remove '.', '..', and 'thumbs.db' from every fnames_combo
         fnames_combo = fnames_combo(4:end);
         fnames = [fnames, fnames_combo];
         
-        %labels_combo = zeros(size(fnames_combo,2), size(classes,2));
         labels_combo = ones(size(fnames_combo,2), 1) * class_id;
-        %labels_combo(:, class_id) = 1;
         labels = cat(1, labels, labels_combo);
         
+        % 1 for training, adds 1 (for the total of 2) if split == 'test'
         sets_combo = ones(size(fnames_combo,2), 1) + strcmp(split,'test');
         sets = cat(1, sets, sets_combo);
     end
     class_id = class_id + 1;
 end
 
-fnames = cellstr(reshape(fnames, [size(fnames, 2),1]));
-
 data = zeros(32, 32, 3, size(fnames, 1));
+fnames = cellstr(reshape(fnames, [size(fnames, 2),1]));
 im_data = vl_imreadjpeg(fnames, 'Resize', [32, 32]);
+% This could have been done in the for loop above, but would have slowed
+% things down due to reallocating significant chunks of memory multiple
+% times (whereas the first for loop does this with very small arrays)
 for i=1:size(fnames, 1)
     im = im_data{i};
+    % if the image is grayscale, repeat it on all channels
     if size(im, 3) == 1
         im = repmat(im,1,1,3);
     end
     data(:,:,:, i) = im;
 end
-disp(data(:,:,:,2000))
-data = single(data/255);
 data(isnan(data)) = 0;
-
+data = single(data/255);
 labels = single(labels');
-sets = single(sets')
-%fd
+sets = single(sets);
+
 %%
 % subtract mean
 dataMean = mean(data(:, :, :, sets == 1), 4);
@@ -140,7 +137,6 @@ imdb.images.set = sets;
 imdb.meta.sets = {'train', 'val'} ;
 imdb.meta.classes = classes;
 
-%perm = randperm(numel(imdb.images.labels));
 perm = randperm(numel(imdb.images.set));
 imdb.images.data = imdb.images.data(:,:,:, perm);
 imdb.images.labels = imdb.images.labels(perm);
