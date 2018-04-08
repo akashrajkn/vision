@@ -1,14 +1,15 @@
 %% main function 
+clc;
 %% fine-tune the cnn & get optimal hyperparameters
-seeds = 3;
+seeds = [1, 2, 3];
 batch_size_array = [50, 100];
 num_epochs_array = [40, 80, 120];
-results = zeros(length(batch_size_array)*length(num_epochs_array)*seeds, 5);
+results = zeros(length(batch_size_array)*length(num_epochs_array)*length(seeds), 5);
 
 i = 1;
 for num_epochs = num_epochs_array
     for batch_size = batch_size_array
-        for seed = 1:seeds
+        for seed = seeds
             rng(seed)
             rmdir('data/cnn_assignment-lenet', 's')
             [net, info, expdir] = finetune_cnn(batch_size, num_epochs);
@@ -31,10 +32,12 @@ dlmwrite('results-hyperparam.txt',results,'delimiter','\t')
 % for every hyperparameter setting, take an average of the results obtained
 % using different seeds. this works because the seed is alterated in the 
 % innermost loop.
-res_seeds_avgd_out = arrayfun(@(i) mean(results(i:i+seeds-1, :)), 1:seeds:length(results)-seeds+1, 'un',0)';
-res_seeds_avgd_out = cell2mat(res_seeds_avgd_out);
-disp(res_seeds_avgd_out)
-dlmwrite('results-hyperparam-avg-per-seed.txt',res_seeds_avgd_out,'delimiter','\t')
+if length(seeds)>1
+    res_seeds_avgd_out = arrayfun(@(i) mean(results(i:i+seeds-1, :)), 1:seeds:length(results)-seeds+1, 'un',0)';
+    res_seeds_avgd_out = cell2mat(res_seeds_avgd_out);
+    disp(res_seeds_avgd_out)
+    dlmwrite('results-hyperparam-avg-per-seed.txt',res_seeds_avgd_out,'delimiter','\t')
+end
 
 
 %% extract features and train svm
@@ -62,22 +65,44 @@ tsne_pretrained = tsne(features_pretrained);
 tsne_finetuned = tsne(features_finetuned);
 
 % plot t-sne
-subplot(1,3,1); 
+subplot(1,2,1); 
 scatter(tsne_pretrained(:,1), tsne_pretrained(:,2), 10, labels_pretrained, 'filled');
 title('\fontsize{14}pre-trained features')
 
-subplot(1,3,2); 
+subplot(1,2,2); 
 scatter(tsne_finetuned(:,1), tsne_finetuned(:,2), 10, labels_finetuned, 'filled');
 title('\fontsize{14}fine-tuned features')
 
-subplot(1,3,3); 
-scatter(tsne_finetuned(:,1), tsne_finetuned(:,2), 10, labels_finetuned, 'filled');
-title('\fontsize{14}fine-tuned features')
-colorbar
 
 %% early stopping
-% % retrain the CNN with best hyperparameters for use in further experiments
-% rmdir data/cnn_assignment-lenet
-% batch_size_best = results(results(:,3) == max(results(:,3)), 1);
-% num_epochs_best = results(results(:,3) == max(results(:,3)), 2);
-% [net, info, expdir] = finetune_cnn(batch_size, num_epochs);
+
+%retrain the CNN with best hyperparameters; make sure to remove data/cnn_assignment-lenet
+%batch_size_best = results(results(:,3) == max(results(:,3)), 1);
+%num_epochs_best = results(results(:,3) == max(results(:,3)), 2);
+batch_size_best = 100;
+num_epochs_best = 120;
+rng(1)
+[net, info, expdir] = finetune_cnn(batch_size_best, num_epochs_best);
+
+% compute the best place to early-stop according to Prechelt (1998)
+alpha = 300;
+val_obj = vertcat(info.val.objective);
+min_so_far = zeros(length(val_obj),1);
+for i = 1:length(val_obj)
+    min_so_far(i) = min(val_obj(1:i));
+end
+generalization_loss = (val_obj./min_so_far - 1) * 100;
+for i = 1:length(generalization_loss)
+    if generalization_loss(i) > alpha
+       best_val_id = i-1;
+       disp(strcat('Best epoch to early stop is~', num2str(best_val_id)))
+       break;
+    else
+        best_val_id = num_epochs_best;
+    end
+end
+
+% load the network with the best generalization loss and train the svm
+nets.fine_tuned = load(fullfile(expdir, strcat('/net-epoch-', num2str(best_val_id), '.mat')));
+nets.fine_tuned = nets.fine_tuned.net; 
+train_svm(nets, data);

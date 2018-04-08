@@ -5,6 +5,10 @@ opts.networkType = 'simplenn' ;
 
 %% TODO: PLAY WITH THESE PARAMETERTS TO GET A BETTER ACCURACY
 
+% freezing early layers
+% lr_prev_layers = [0, 0];
+
+% normal fine-tuning
 lr_prev_layers = [.2, 2];
 lr_new_layers  = [1, 4]; 
 
@@ -15,7 +19,7 @@ net.meta.inputSize = [32 32 3] ;
 
 lr_period = round(numEpochs / 4);
 net.meta.trainOpts.learningRate = [ 0.05*ones(1,lr_period) ...
-                                    0.001*ones(1,lr_period)...
+                                    0.01*ones(1,lr_period)...
                                     0.005*ones(1,lr_period)...
                                     0.0005*ones(1,lr_period)...
                                     ] ;
@@ -73,7 +77,6 @@ net.layers{end+1} = struct('type', 'conv', ...
                            'pad', 0) ;
 net.layers{end+1} = struct('type', 'relu') ;
 
-%% TODO: Define the structure here, so that the network outputs 4-class rather than 10 (as in the pretrained network)
 % Block 5
 
 NEW_INPUT_SIZE  = 64;

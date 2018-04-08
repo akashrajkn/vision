@@ -92,8 +92,8 @@ for class = classes
         dinfo = dir(combo_path);
         
         fnames_combo = strcat(combo_path, '/', {dinfo.name});
-        % remove '.', '..', and 'thumbs.db' from every fnames_combo
-        fnames_combo = fnames_combo(4:end);
+        % remove '.', '..' from every fnames_combo
+        fnames_combo = fnames_combo(3:end);
         fnames = [fnames, fnames_combo];
         
         labels_combo = ones(size(fnames_combo,2), 1) * class_id;
