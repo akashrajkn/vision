@@ -1,4 +1,4 @@
-%% main function 
+%% main function
 clc;
 %% fine-tune the cnn & get optimal hyperparameters
 seeds = [1, 2, 3];
@@ -30,7 +30,7 @@ disp(results)
 dlmwrite('results-hyperparam.txt',results,'delimiter','\t')
 
 % for every hyperparameter setting, take an average of the results obtained
-% using different seeds. this works because the seed is alterated in the 
+% using different seeds. this works because the seed is alterated in the
 % innermost loop.
 if length(seeds)>1
     res_seeds_avgd_out = arrayfun(@(i) mean(results(i:i+seeds-1, :)), 1:seeds:length(results)-seeds+1, 'un',0)';
@@ -42,7 +42,7 @@ end
 
 %% extract features and train svm
 nets.fine_tuned = net_fine_tuned_best;
-nets.pre_trained = load(fullfile('data', 'pre_trained_model.mat')); nets.pre_trained = nets.pre_trained.net; 
+nets.pre_trained = load(fullfile('data', 'pre_trained_model.mat')); nets.pre_trained = nets.pre_trained.net;
 data = load(fullfile(expdir, 'imdb-caltech.mat'));
 
 train_svm(nets, data);
@@ -65,20 +65,18 @@ tsne_pretrained = tsne(features_pretrained);
 tsne_finetuned = tsne(features_finetuned);
 
 % plot t-sne
-subplot(1,2,1); 
+subplot(1,2,1);
 scatter(tsne_pretrained(:,1), tsne_pretrained(:,2), 10, labels_pretrained, 'filled');
 title('\fontsize{14}pre-trained features')
 
-subplot(1,2,2); 
+subplot(1,2,2);
 scatter(tsne_finetuned(:,1), tsne_finetuned(:,2), 10, labels_finetuned, 'filled');
 title('\fontsize{14}fine-tuned features')
 
 
-%% early stopping
-
-%retrain the CNN with best hyperparameters; make sure to remove data/cnn_assignment-lenet
-%batch_size_best = results(results(:,3) == max(results(:,3)), 1);
-%num_epochs_best = results(results(:,3) == max(results(:,3)), 2);
+%% Early stopping
+% retrain the CNN with best hyperparameters; make sure to remove data/cnn_assignment-lenet
+% prior to running this.
 batch_size_best = 100;
 num_epochs_best = 120;
 rng(1)
@@ -104,5 +102,5 @@ end
 
 % load the network with the best generalization loss and train the svm
 nets.fine_tuned = load(fullfile(expdir, strcat('/net-epoch-', num2str(best_val_id), '.mat')));
-nets.fine_tuned = nets.fine_tuned.net; 
+nets.fine_tuned = nets.fine_tuned.net;
 train_svm(nets, data);
